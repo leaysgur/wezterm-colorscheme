@@ -1,0 +1,186 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+:where(body) {
+  margin: 0;
+  padding: 0;
+}
+:where(h1, h2) {
+  margin: 0;
+  font-size: 1.25rem;
+}
+:where(p) {
+  margin: 0;
+}
+:where(ul) {
+  list-style: none;
+  padding: 0;
+}
+:where(dd) {
+  margin: 0;
+}
+:where(a) {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Global, static part */
+:root {
+  --brand-1: #673ab8;
+  --brand-2: #7e56c2;
+  --white: #eef;
+
+  background-color: var(--white);
+
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  font-family: ui-monospace, monospace;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+  color: var(--white);
+}
+
+dialog[open] {
+  border: none;
+  display: grid;
+  gap: 0.5rem;
+
+  & a {
+    color: var(--brand-1);
+  }
+}
+::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+main {
+  padding: 1rem;
+}
+
+.Loader {
+  font-size: 1.5rem;
+  text-align: center;
+  padding-block-start: 2rem;
+}
+
+/* Dynamic part */
+.AppGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  gap: 1rem;
+}
+
+.AppTop {
+  text-align: right;
+  position: sticky;
+  top: 2rem;
+  font-size: 2rem;
+}
+
+.Swatches {
+  & > nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  & a {
+    display: inline-block;
+    width: 1.25rem;
+    aspect-ratio: 1;
+    background-color: var(--background);
+    border: 1px solid var(--background);
+
+    &:hover {
+      border-color: var(--foreground);
+    }
+  }
+}
+
+.Item {
+  overflow: hidden;
+  height: 100%;
+  padding: 0.75rem;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+.ItemHead {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ItemPlaceholder {
+  height: 26rem;
+}
+
+.ItemBodyRow {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+
+  /* Even rows are brights colors */
+  &:nth-child(even) {
+    font-weight: bold;
+  }
+}
+
+.ItemBodyCell {
+  padding-inline: 0.25rem;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+@keyframes blink {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.ItemUsage {
+  &::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  &::after {
+    content: "_";
+    display: inline-block;
+    color: transparent;
+    background-color: var(--cursor-bg);
+    border: 1px solid var(--cursor-border);
+    animation: blink 1s step-end infinite;
+  }
+}
+/* XXX: Why opt-in pattern does not work...? */
+@media (prefers-reduced-motion: none) {
+  .ItemUsage::after {
+    animation: none;
+  }
+}
+
+.ItemFooter {
+  border-block-start: 1px solid var(--foreground);
+
+  & dl > div {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

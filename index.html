@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WezTerm Color Schemes</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>WezTerm Color Schemes</h1>
+      <button onclick="about.showModal()">ℹ️</button>
+    </header>
+
+    <main data-js-app>
+      <p class="Loader">Loading...💤</p>
+    </main>
+
+    <dialog id="about">
+      <p>ℹ️ About this site</p>
+      <p>
+        This is unofficial color schemes gallery for
+        <a href="https://wezfurlong.org/wezterm/" target="_blank">WezTerm</a>.
+      </p>
+      <ul>
+        <li>
+          Author:
+          <a href="https://x.com/leaysgur" target="_blank">@leaysgur</a>
+        </li>
+        <li>
+          Source:
+          <a href="https://github.com/leaysgur/wezterm-colorscheme"
+            >https://github.com/leaysgur/wezterm-colorscheme</a
+          >
+        </li>
+      </ul>
+      <button onclick="about.close()">Close</button>
+    </dialog>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "preact": "https://esm.sh/preact@10.19.3",
+          "preact/hooks": "https://esm.sh/preact@10.19.3/hooks?external=preact",
+          "@preact/signals": "https://esm.sh/@preact/signals@1.2.2?external=preact",
+          "htm": "https://esm.sh/htm@3.1.1"
+        }
+      }
+    </script>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
