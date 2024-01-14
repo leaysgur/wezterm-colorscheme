@@ -105,7 +105,15 @@ main {
     }
   }
 }
-
+@keyframes highlight {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
 .Item {
   overflow: hidden;
   height: 100%;
@@ -116,6 +124,12 @@ main {
   font-size: 0.75rem;
   color: var(--foreground);
   background-color: var(--background);
+
+  &.-highlight {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: highlight 0.5s step-end 8;
+    }
+  }
 }
 
 .ItemHead {
@@ -125,7 +139,7 @@ main {
 }
 
 .ItemPlaceholder {
-  height: 26rem;
+  height: 19rem;
 }
 
 .ItemBodyRow {
@@ -178,6 +192,7 @@ main {
 
 .ItemFooter {
   border-block-start: 1px solid var(--foreground);
+  padding-block-start: 0.5rem;
 
   & dl > div {
     display: flex;

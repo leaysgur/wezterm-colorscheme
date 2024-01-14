@@ -32,7 +32,11 @@ let DATA = [];
 
 const $app = document.querySelector("main[data-js-app]");
 try {
-  const data = await (await fetch("https://raw.githubusercontent.com/wez/wezterm/main/docs/colorschemes/data.json")).json();
+  const data = await (
+    await fetch(
+      "https://raw.githubusercontent.com/wez/wezterm/main/docs/colorschemes/data.json",
+    )
+  ).json();
   // const data = (await import("/_data.js")).default;
 
   // Sort by HSV, Value > Saturation > Hue
@@ -76,7 +80,8 @@ function App() {
 function Swatches() {
   return html`<details class="Swatches" open>
     <summary>
-      Total <b>${DATA.length}</b> items are found. Click swatch to jump!
+      Total <b>${DATA.length}</b> color schemes are supported. Click a swatch to
+      jump!
     </summary>
 
     <nav>
@@ -84,6 +89,14 @@ function Swatches() {
         ({ metadata, colors }) =>
           html` <a
             href=${"#" + nameToHash(metadata.name)}
+            onClick=${(ev) => {
+              // XXX: JS is not needed in theory. 
+              // But Firefox jumps to incorrect position w/o JS!
+              ev.preventDefault();
+              const target = document.querySelector(ev.currentTarget.hash);
+              target.scrollIntoView();
+              target.classList.add("-highlight");
+            }}
             title=${metadata.name}
             style="
               --background: ${colors.background || "inherit"};
@@ -108,7 +121,7 @@ function Item({ colors, metadata }) {
   const hash = nameToHash(metadata.name);
 
   const ref = useRef();
-  const isVisible = useVisible(ref, {});
+  const isVisible = useVisible(ref, { rootMargin: "20%" });
 
   return html`<article
     ref=${ref}
@@ -148,37 +161,35 @@ function Item({ colors, metadata }) {
               `,
             )}
           </div>
-
-          <code class="ItemUsage"
-            >config.color_scheme = '${metadata.name}'</code
-          >
-
-          <footer class="ItemFooter">
-            <dl>
-              <div>
-                <dt>Since:</dt>
-                <dd>${metadata.wezterm_version}</dd>
-              </div>
-              <div>
-                <dt>Author:</dt>
-                <dd>${metadata.author || "???"}</dd>
-              </div>
-              <div>
-                <dt>Links:</dt>
-                <dd>
-                  <a
-                    href=${`https://wezfurlong.org/wezterm/colorschemes/${metadata.prefix}/index.html#${hash}`}
-                    target="_blank"
-                    >Docs</a
-                  >
-                  ${", "}
-                  <a href=${metadata.origin_url} target="_blank">Source</a>
-                </dd>
-              </div>
-            </dl>
-          </footer>
         `
       : html`<div class="ItemPlaceholder" />`}
+
+    <code class="ItemUsage">config.color_scheme = '${metadata.name}'</code>
+
+    <footer class="ItemFooter">
+      <dl>
+        <div>
+          <dt>Since:</dt>
+          <dd>${metadata.wezterm_version}</dd>
+        </div>
+        <div>
+          <dt>Author:</dt>
+          <dd>${metadata.author || "???"}</dd>
+        </div>
+        <div>
+          <dt>Links:</dt>
+          <dd>
+            <a
+              href=${`https://wezfurlong.org/wezterm/colorschemes/${metadata.prefix}/index.html#${hash}`}
+              target="_blank"
+              >Docs</a
+            >
+            ${", "}
+            <a href=${metadata.origin_url} target="_blank">Source</a>
+          </dd>
+        </div>
+      </dl>
+    </footer>
   </article>`;
 }
 
