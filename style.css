@@ -64,7 +64,11 @@ dialog[open] {
 }
 
 main {
-  padding: 1rem;
+  padding: 0.5rem;
+
+  @media (min-width: 30rem) {
+    padding: 1rem;
+  }
 }
 
 .Loader {
@@ -95,13 +99,17 @@ main {
 
   & a {
     display: inline-block;
-    width: 1.25rem;
+    width: 0.75rem;
     aspect-ratio: 1;
-    background-color: var(--background);
-    border: 1px solid var(--background);
+    background-color: var(--bg);
+    border: 1px solid var(--bg);
 
     &:hover {
-      border-color: var(--foreground);
+      border-color: var(--fg);
+    }
+
+    @media (min-width: 30rem) {
+      width: 1.25rem;
     }
   }
 }
@@ -122,8 +130,8 @@ main {
   align-content: start;
   gap: 0.75rem;
   font-size: 0.75rem;
-  color: var(--foreground);
-  background-color: var(--background);
+  color: var(--fg);
+  background-color: var(--bg);
 
   &.-highlight {
     @media (prefers-reduced-motion: no-preference) {
@@ -138,25 +146,26 @@ main {
   text-overflow: ellipsis;
 }
 
-.ItemPlaceholder {
-  height: 19rem;
+.ItemColorsPlaceholder {
+  height: 18rem; /* 1rem * 18rows */
 }
+.ItemColors {
+  & > div {
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
 
-.ItemBodyRow {
-  display: flex;
-  justify-content: center;
-  gap: 0.25rem;
-
-  /* Even rows are brights colors */
-  &:nth-child(even) {
-    font-weight: bold;
+    /* Even rows are brights colors */
+    &:nth-child(even) {
+      font-weight: bold;
+    }
   }
-}
-
-.ItemBodyCell {
-  padding-inline: 0.25rem;
-  background-color: var(--background);
-  color: var(--foreground);
+  & > div > span {
+    padding-inline: 0.25rem;
+    background-color: var(--bg);
+    color: var(--fg);
+  }
 }
 
 @keyframes blink {
@@ -170,16 +179,16 @@ main {
 }
 .ItemUsage {
   &::selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-fg);
+    background-color: var(--sbg);
+    color: var(--sfg);
   }
 
   &::after {
     content: "_";
     display: inline-block;
     color: transparent;
-    background-color: var(--cursor-bg);
-    border: 1px solid var(--cursor-border);
+    background-color: var(--cbg);
+    border: 1px solid var(--cbd);
     animation: blink 1s step-end infinite;
   }
 }
@@ -191,7 +200,7 @@ main {
 }
 
 .ItemFooter {
-  border-block-start: 1px solid var(--foreground);
+  border-block-start: 1px solid var(--fg);
   padding-block-start: 0.5rem;
 
   & dl > div {

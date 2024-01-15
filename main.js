@@ -18,7 +18,6 @@ const html = htm.bind(h);
  *     selection_fg: string;
  *   };
  *   metadata: {
- *     author: string;
  *     name: string;
  *     origin_url: string;
  *     prefix: string;
@@ -57,7 +56,7 @@ try {
   $app.textContent = err.toString();
 }
 
-// Components(read global DATA) ---
+// Components(read global DATA) ===
 function App() {
   return html`
     <${Swatches} />
@@ -90,17 +89,18 @@ function Swatches() {
           html` <a
             href=${"#" + nameToHash(metadata.name)}
             onClick=${(ev) => {
-              // XXX: JS is not needed in theory. 
+              // XXX: JS is not needed in theory.
               // But Firefox jumps to incorrect position w/o JS!
               ev.preventDefault();
               const target = document.querySelector(ev.currentTarget.hash);
               target.scrollIntoView();
+
               target.classList.add("-highlight");
             }}
             title=${metadata.name}
             style="
-              --background: ${colors.background || "inherit"};
-              --foreground: ${colors.foreground || "inherit"};
+              --bg: ${colors.background || "inherit"};
+              --fg: ${colors.foreground || "inherit"};
             "
           />`,
       )}
@@ -110,14 +110,6 @@ function Swatches() {
 
 /** @param {ColorSchemeItem} props */
 function Item({ colors, metadata }) {
-  const rowColors = colors.ansi.reduce(
-    (acc, cur, idx) => {
-      acc.push(cur, colors.brights[idx]);
-      return acc;
-    },
-    [colors.foreground, colors.foreground],
-  );
-  const colColors = [colors.background, ...colors.ansi];
   const hash = nameToHash(metadata.name);
 
   const ref = useRef();
@@ -128,41 +120,19 @@ function Item({ colors, metadata }) {
     id=${hash}
     class="Item"
     style="
-      --background: ${colors.background || "inherit"};
-      --foreground: ${colors.foreground || "inherit"};
-      --cursor-bg: ${colors.cursor_bg || "inherit"};
-      --cursor-fg: ${colors.cursor_fg || "inherit"};
-      --cursor-border: ${colors.cursor_border || "inherit"};
-      --selection-bg: ${colors.selection_bg || "inherit"};
-      --selection-fg: ${colors.selection_fg || "inherit"};
+      --bg: ${colors.background || "inherit"};
+      --fg: ${colors.foreground || "inherit"};
+      --cbg: ${colors.cursor_bg || "inherit"};
+      --cbd: ${colors.cursor_border || "inherit"};
+      --sbg: ${colors.selection_bg || "inherit"};
+      --sfg: ${colors.selection_fg || "inherit"};
     "
   >
     <h2 class="ItemHead" title=${metadata.name}>${metadata.name}</h2>
 
-    ${isVisible.value
-      ? html`
-          <div>
-            ${rowColors.map(
-              (rowColor) => html`
-                <div class="ItemBodyRow">
-                  ${colColors.map(
-                    (colColor) =>
-                      html`<div
-                        class="ItemBodyCell"
-                        style="
-                          --foreground: ${rowColor || "inherit"};
-                          --background: ${colColor || "inherit"};
-                        "
-                      >
-                        gYw
-                      </div>`,
-                  )}
-                </div>
-              `,
-            )}
-          </div>
-        `
-      : html`<div class="ItemPlaceholder" />`}
+    ${!isVisible.value
+      ? html`<div class="ItemColorsPlaceholder" />`
+      : html`<${Colors} colors=${colors} />`}
 
     <code class="ItemUsage">config.color_scheme = '${metadata.name}'</code>
 
@@ -171,10 +141,6 @@ function Item({ colors, metadata }) {
         <div>
           <dt>Since:</dt>
           <dd>${metadata.wezterm_version}</dd>
-        </div>
-        <div>
-          <dt>Author:</dt>
-          <dd>${metadata.author || "???"}</dd>
         </div>
         <div>
           <dt>Links:</dt>
@@ -193,7 +159,35 @@ function Item({ colors, metadata }) {
   </article>`;
 }
 
-// Utils ---
+/** @param {{ colors: ColorSchemeItem["colors"] }} props */
+function Colors({ colors }) {
+  const rowColors = colors.ansi.reduce(
+    (acc, cur, idx) => {
+      acc.push(cur, colors.brights[idx]);
+      return acc;
+    },
+    [colors.foreground, colors.foreground],
+  );
+  const colColors = [colors.background, ...colors.ansi];
+
+  return html`
+    <div class="ItemColors">
+      ${rowColors.map(
+        (rowColor) => html`
+          <div style="--fg: ${rowColor || "inherit"};">
+            ${colColors.map(
+              (colColor) =>
+                // Optimize? All rows has the same column bg...
+                html`<span style="--bg: ${colColor || "inherit"};">gYw</span>`,
+            )}
+          </div>
+        `,
+      )}
+    </div>
+  `;
+}
+
+// Utils ===
 function nameToHash(name) {
   return name
     .toLowerCase()
