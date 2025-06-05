@@ -1,8 +1,7 @@
-import htm from "htm";
-import { h, render } from "preact";
+import { html } from "htm/preact";
+import { render } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import { useSignal } from "@preact/signals";
-const html = htm.bind(h);
 
 /**
  * @typedef {{
@@ -112,7 +111,7 @@ function Swatches() {
 function Item({ colors, metadata }) {
   const hash = nameToHash(metadata.name);
 
-  const ref = useRef();
+  const ref = useRef(null);
   const isVisible = useVisible(ref, { rootMargin: "20%" });
 
   return html`<article
